@@ -98,6 +98,7 @@
    <script>
   const webhookURL = "https://discord.com/api/webhooks/1299910471142604831/ltYzQP8epJVSl3mGFju49jkuvd5r7Qtl-t0q-jNefyYLg_nin_gru5B_zDa_XGe6Vq0D";
   const emojiId = "1299916015018446924"; 
+  const emojiName = "roadmap";
 
   function isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -111,7 +112,7 @@
     if (!isValidEmail(email)) return;
 
     const message = {
-      content: `<:${emojiId}> **New User Joined!** (${email})`
+      content: `<:${emojiName}:${emojiId}> **New User Joined!** (${email})`
     };
 
     fetch(webhookURL, {
