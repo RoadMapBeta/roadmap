@@ -55,17 +55,6 @@ body {
   align-items: center;
 }
 
-.join-heading {
-  position: absolute;
-  color: #000;
-  top: 55px;
-  left: 1320px;
-  font-size: 1.13rem;
-  color: #fff;
-  font-style: italic;
-  vertical-align: middle;
-}
-
 .email-form {
   text-align: center;
   padding: 10px;
@@ -100,18 +89,6 @@ select:focus {
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
-}
-
-.gh-logo {
-  display: inline-block;
-  width: 26px;
-  height: 25px;
-  position: relative;
-  bottom: 2px;
-  filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%)
-    hue-rotate(137deg) brightness(110%) contrast(101%);
-  vertical-align: middle;
-  margin-right: 5px;
 }
 
 .social-icons a {
@@ -320,17 +297,6 @@ h3.feature-title {
   margin: 20px 0;
 }
 
-.credits {
-  position: absolute;
-  color: #000;
-  top: 55px;
-  left: 1200px;
-  font-size: 1.13rem;
-  color: #fff;
-  vertical-align: middle;
-  text-decoration: none;
-}
-
 .credit-title h1 {
   color: #fff;
   text-align: center;
@@ -414,5 +380,48 @@ transition: opacity 0.3s ease, visibility 0.3s ease;
   font-weight: 500;
 }
 
+.header-links {
+  position: absolute;
+  top: 55px; 
+  right: 20px; 
+  display: flex; 
+  align-items: center; 
+  gap: 12px;
+  font-size: 1.13rem; 
+}
+
+.join-heading {
+  display: flex;
+  align-items: center;
+  color: #fff; 
+  text-decoration: none; 
+  font-style: italic;
+  overflow: hidden; 
+  white-space: nowrap; 
+}
+
+.gh-logo {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px; 
+  filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%)
+    hue-rotate(137deg) brightness(110%) contrast(101%);
+}
 
 
+.credits {
+  color: #fff;
+  text-decoration: none; 
+}
+
+
+@media (max-width: 600px) {
+  .header-links {
+      font-size: 1rem; 
+  }
+  
+  .gh-logo {
+      width: 20px;
+      height: 20px;
+  }
+}
