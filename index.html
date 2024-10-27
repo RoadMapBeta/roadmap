@@ -145,6 +145,7 @@ async function getEmailCheckResult(checkId) {
     } catch (error) {
         console.error("Error with Proofy result API:", error);
     }
+    return null; 
 }
 
 document.getElementById("waitlist-form").addEventListener("submit", async function (e) {
@@ -159,10 +160,14 @@ document.getElementById("waitlist-form").addEventListener("submit", async functi
         return;
     }
 
-    const result = await getEmailCheckResult(checkId);
-    if (!result) {
-        alert("Email verification timed out. Please try again.");
-        return;
+    let result = null;
+
+    while (result === null) {
+        result = await getEmailCheckResult(checkId);
+        if (result === null) {
+            console.log("Waiting for result..."); 
+            await new Promise(resolve => setTimeout(resolve, 2000)); 
+        }
     }
 
     const emoji = result === "deliverable" ? emojiCheck : emojiX;
@@ -182,7 +187,6 @@ document.getElementById("waitlist-form").addEventListener("submit", async functi
             toast.classList.remove("hidden");
             toast.style.opacity = '1'; 
 
-            
             setTimeout(() => {
                 toast.style.opacity = '0'; 
                 setTimeout(() => toast.classList.add("hidden"), 300); 
