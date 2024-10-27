@@ -398,6 +398,7 @@ transition: opacity 0.3s ease, visibility 0.3s ease;
   font-style: italic;
   overflow: hidden; 
   white-space: nowrap; 
+  margin-left: 15px;
 }
 
 .gh-logo {
