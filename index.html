@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RoadMap - Explore New Roads, Challenge Friends</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a href="index.html">
+      <div class="logo">RoadMap</div>
+    </a>
+    <a href="https://github.com/RoadMapBeta">
+      <div class="join-heading">
+        <img class="gh-logo" src="images/github.png" alt="GitHub Logo" />GitHub
+      </div>
+    </a>
+    <a href="credits.html">
+      <div class="credits">Credits</div>
+    </a>
+
+    <div class="center">
+      <div class="xl-text">
+        Discover new <span class="road-texture">roads</span>. <br />
+        Forge your own path.
+      </div>
+      <div class="subtext">Redefining Exploration, One Road at a Time.</div>
+    </div>
+
+    <div class="email-form">
+      <form id="waitlist-form" action="/submit-email" method="post">
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Enter your email address"
+          required
+        />
+        <button type="submit">Join Waitlist</button>
+      </form>
+      <div id="notification" class="notification hidden"></div>
+    </div>
+
+    <section class="features-section">
+      <div class="features-container">
+        <div class="feature-item">
+          <img
+            src="./images/road.png"
+            alt="Discover Roads"
+            class="feature-image"
+          />
+          <h3 class="feature-title">Discover New Roads</h3>
+          <p>Discover scenic areas and add new roads to your collection!</p>
+        </div>
+        <div class="feature-item">
+          <img
+            src="./images/trophy.png"
+            alt="Challenge Friends"
+            class="feature-image"
+          />
+          <h3 class="feature-title">Challenge Friends</h3>
+          <p>
+            Compete with friends to explore and discover the most roads in your
+            area.
+          </p>
+        </div>
+        <div class="feature-item">
+          <img src="./images/map.png" alt="Map Skins" class="feature-image" />
+          <h3 class="feature-title">Unlock Map Skins</h3>
+          <p>
+            Customize your map with unique skins earned by completing
+            challenges.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="road">
+        <div class="road-line"></div>
+        <div class="road-line"></div>
+        <div class="road-line"></div>
+      </div>
+      <div class="footer-vehicles">
+        <img src="images/car.png" alt="Car driving" class="car-img" />
+        <img src="images/bus.png" alt="Bus driving" class="bus-img" />
+        <img src="images/truck.png" alt="Truck driving" class="truck-img" />
+      </div>
+      <div class="footer-content">
+        <div class="footer-logo">RoadMap</div>
+        <p class="footer-description">
+          Coming soon to iOS and Android. Powered by TomTom.
+        </p>
+        <div class="social-icons">
+          <a href="https://github.com/RoadmapBeta">
+            <img src="images/github.png" alt="GitHub" class="img-logo" />
+          </a>
+          <a href="https://x.com/roadmapbeta">
+            <img src="images/x-social.png" alt="X" class="x-social" />
+          </a>
+          <a href="https://www.facebook.com/profile.php?id=61566742735877">
+            <img src="images/facebook.webp" alt="Facebook" class="img-logo" />
+          </a>
+          <a href="https://discord.gg/wjDhjjTzJc">
+            <img src="images/discord.png" alt="Discord" class="img-logo" />
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document
+        .getElementById("waitlist-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const email = document.getElementById("email").value;
+          const message = document.getElementById("confirmation-message");
+          message.classList.remove("hidden");
+          message.style.display = "block";
+          setTimeout(() => {
+            message.style.display = "none";
+          }, 3000);
+        });
+    </script>
+  </body>
+</html>

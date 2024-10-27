@@ -1,0 +1,402 @@
+@import url("https://rsms.me/inter/inter.css");
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons+Round");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #000000;
+}
+
+.xl-text {
+  font-size: 5.5rem;
+  line-height: 1;
+  font-weight: 800;
+  color: #fff;
+  text-align: center;
+  margin-top: 12rem;
+}
+
+.subtext {
+  font-size: 2.25rem;
+  line-height: 1;
+  font-weight: 500;
+  color: #c8c8cc;
+  text-align: center;
+  padding: 55px 0px;
+}
+
+.road-texture {
+  background-image: url("https://static.vecteezy.com/system/resources/previews/000/167/493/non_2x/vector-highway-road-with-metal-traffic-barriers.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: cover;
+}
+
+.logo {
+  position: absolute;
+  color: #fff;
+  top: 55px;
+  left: 50px;
+  font-size: 1.5rem;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.join-heading {
+  position: absolute;
+  color: #000;
+  top: 55px;
+  left: 1320px;
+  font-size: 1.13rem;
+  color: #fff;
+  font-style: italic;
+  vertical-align: middle;
+}
+
+.email-form {
+  text-align: center;
+  padding: 10px;
+}
+
+.email-form input[type="email"] {
+  width: 18%;
+  padding: 10px;
+  border-radius: 4px;
+  border: none;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #151519;
+  border: 2px solid #1f1f24;
+  border-radius: 4px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid #323131;
+}
+
+.email-form button {
+  background-color: #fff;
+  margin-left: 5px;
+  color: #000000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.gh-logo {
+  display: inline-block;
+  width: 26px;
+  height: 25px;
+  position: relative;
+  bottom: 2px;
+  filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%)
+    hue-rotate(137deg) brightness(110%) contrast(101%);
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.social-icons a {
+  margin: 0 10px;
+}
+
+.social-icons {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+}
+
+img.img-logo  {
+  width: 24px;
+  filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%)
+  hue-rotate(137deg) brightness(110%) contrast(101%);
+}
+
+img.x-social {
+  width: 35px;
+}
+
+
+.features-section {
+  padding-top: 60px;
+  text-align: center;
+  color: #fff;
+}
+
+.features-container {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.feature-item {
+  max-width: 300px;
+  margin: 20px;
+}
+
+.feature-image {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+img.feature-image {
+  height: 150px;
+  width: 150px;
+}
+
+.feature-item h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+h3.feature-title {
+  font-weight: 700;
+}
+
+.feature-item p {
+  font-size: 1rem;
+  color: #c8c8cc;
+}
+
+.footer {
+  position: relative;
+  overflow: hidden;
+  padding: 100px 0;
+  text-align: center;
+  color: #fff;
+}
+
+.footer-vehicles {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 65px; 
+}
+
+.car-img {
+  position: absolute;
+  bottom: 10px; 
+  width: 120px;
+  height: auto;
+}
+
+.bus-img {
+  position: absolute;
+  bottom: 2px;
+  width: 80px; 
+  height: auto;
+}
+
+.truck-img {
+  position: absolute;
+  bottom: 6px;
+  width: 80px; 
+  height: auto;
+}
+
+.car-img {
+  animation: carMove 9s ease-out infinite;
+}
+
+.bus-img {
+  animation: busMove 13s ease-out infinite;
+}
+
+.truck-img {
+  animation: truckMove 16s ease-out infinite;
+}
+
+@keyframes carMove {
+  0% {
+    left: -150px;
+  }
+  50% {
+    left: calc(50% - 50px); 
+  }
+  100% {
+    left: 100%; 
+  }
+}
+
+@keyframes busMove {
+  0% {
+    left: -1000px;
+  }
+  50% {
+    left: calc(50% - 50px);
+  }
+  100% {
+    left: 100%; 
+  }
+}
+
+@keyframes truckMove {
+  0% {
+    left: -3000px;
+  }
+  50% {
+    left: calc(50% - 50px);
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.road {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #333;
+  overflow: hidden;
+}
+
+.road-line {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 20px,
+    white 20px,
+    white 40px
+  );
+  animation: roadMove 2s linear infinite;
+}
+
+@keyframes roadMove {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(
+      -40px
+    ); 
+  }
+}
+
+.footer-content {
+  position: relative;
+  z-index: 1;
+  padding-top: 40px;
+}
+
+.footer-logo {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.footer-description {
+  font-size: 1rem;
+  color: #c8c8cc;
+  margin: 20px 0;
+}
+
+.credits {
+  position: absolute;
+  color: #000;
+  top: 55px;
+  left: 1200px;
+  font-size: 1.13rem;
+  color: #fff;
+  vertical-align: middle;
+  text-decoration: none;
+}
+
+.credit-title h1 {
+  color: #fff;
+  text-align: center;
+  margin-top: 160px;
+  font-size: 3rem;
+  font-weight: bolder;
+}
+
+.credit-title  {
+  color: #fff;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.credit-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  width: 900px;
+  margin-left: 250px;
+  margin-top: 100px;
+}
+
+img.grid-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px solid gray;
+}
+
+h2 {
+  color: #fff;
+}
+
+h3 {
+  color: #fff;
+  font-weight: 300;
+  position: relative;
+  bottom: 25px;
+  text-wrap: nowrap;
+}
+
+.grid {
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification {
+  display: none;
+  background-color: green; 
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  position: fixed; 
+  top: 20px; 
+  left: 50%;
+  transform: translateX(-50%); 
+  z-index: 1000; 
+}
+
+.notification.show {
+  display: block;
+}
+
+a {
+  text-decoration: none;
+}
+
