@@ -95,36 +95,38 @@
       </div>
     </footer>
 
-    <script>
-      const webhookURL = "https://discord.com/api/webhooks/1299910471142604831/ltYzQP8epJVSl3mGFju49jkuvd5r7Qtl-t0q-jNefyYLg_nin_gru5B_zDa_XGe6Vq0D";
+   <script>
+  const webhookURL = "https://discord.com/api/webhooks/1299910471142604831/ltYzQP8epJVSl3mGFju49jkuvd5r7Qtl-t0q-jNefyYLg_nin_gru5B_zDa_XGe6Vq0D";
+  const emojiId = "1299916015018446924"; 
 
-      function isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+  function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  document.getElementById("waitlist-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const email = document.getElementById("email").value;
+
+    if (!isValidEmail(email)) return;
+
+    const message = {
+      content: `<:${emojiId}> **New User Joined!** (${email})`
+    };
+
+    fetch(webhookURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(message),
+    })
+    .then(response => {
+      if (response.ok) {
+        const toast = document.getElementById("toast");
+        toast.classList.remove("hidden");
+        setTimeout(() => toast.classList.add("hidden"), 3000);
+        document.getElementById("email").value = "";
       }
-
-      document.getElementById("waitlist-form").addEventListener("submit", function (e) {
-        e.preventDefault();
-        const email = document.getElementById("email").value;
-        if (!isValidEmail(email)) return;
-
-        const message = { content: `New email submission: ${email}` };
-
-        fetch(webhookURL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(message),
-        })
-          .then(response => {
-            if (response.ok) {
-              const toast = document.getElementById("toast");
-              toast.classList.remove("hidden");
-              setTimeout(() => toast.classList.add("hidden"), 3000);
-              document.getElementById("email").value = "";
-            }
-          })
-          .catch(error => console.error("Error:", error));
-      });
-    </script>
-  </body>
-</html>
+    })
+    .catch(error => console.error("Error:", error));
+  });
+</script>
