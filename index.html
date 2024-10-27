@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="styles.css" />
     <script src="script.js" defer></script>
     <script>
-        if (window.location.pathname.endsWith('.html')) {
-            window.location.replace(window.location.pathname.replace('.html', ''));
-        }
+      if (window.location.pathname.endsWith('.html')) {
+        window.location.replace(window.location.pathname.replace('.html', ''));
+      }
     </script>
   </head>
   <body>
@@ -44,39 +44,30 @@
         />
         <button type="submit">Join Waitlist</button>
       </form>
-      <div id="notification" class="notification hidden"></div>
+    </div>
+    <div id="toast" class="toast hidden" role="alert">
+      <svg class="w-5 h-5 text-blue-600 dark:text-blue-500 rotate-45" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 17 8 2L9 1 1 19l8-2Zm0 0V9"/>
+      </svg>
+      <div class="toast-message">Email registered successfully.</div>
     </div>
 
     <section class="features-section">
       <div class="features-container">
         <div class="feature-item">
-          <img
-            src="./images/road.png"
-            alt="Discover Roads"
-            class="feature-image"
-          />
+          <img src="./images/road.png" alt="Discover Roads" class="feature-image" />
           <h3 class="feature-title">Discover New Roads</h3>
           <p>Discover scenic areas and add new roads to your collection!</p>
         </div>
         <div class="feature-item">
-          <img
-            src="./images/trophy.png"
-            alt="Challenge Friends"
-            class="feature-image"
-          />
+          <img src="./images/trophy.png" alt="Challenge Friends" class="feature-image" />
           <h3 class="feature-title">Challenge Friends</h3>
-          <p>
-            Compete with friends to explore and discover the most roads in your
-            area.
-          </p>
+          <p>Compete with friends to explore and discover the most roads in your area.</p>
         </div>
         <div class="feature-item">
           <img src="./images/map.png" alt="Map Skins" class="feature-image" />
           <h3 class="feature-title">Unlock Map Skins</h3>
-          <p>
-            Customize your map with unique skins earned by completing
-            challenges.
-          </p>
+          <p>Customize your map with unique skins earned by completing challenges.</p>
         </div>
       </div>
     </section>
@@ -94,40 +85,46 @@
       </div>
       <div class="footer-content">
         <div class="footer-logo">RoadMap</div>
-        <p class="footer-description">
-          Coming soon to iOS and Android. Powered by TomTom.
-        </p>
+        <p class="footer-description">Coming soon to iOS and Android. Powered by TomTom.</p>
         <div class="social-icons">
-          <a href="https://github.com/RoadmapBeta">
-            <img src="images/github.png" alt="GitHub" class="img-logo" />
-          </a>
-          <a href="https://x.com/roadmapbeta">
-            <img src="images/x-social.png" alt="X" class="x-social" />
-          </a>
-          <a href="https://www.facebook.com/profile.php?id=61566742735877">
-            <img src="images/facebook.webp" alt="Facebook" class="img-logo" />
-          </a>
-          <a href="https://discord.gg/wjDhjjTzJc">
-            <img src="images/discord.png" alt="Discord" class="img-logo" />
-          </a>
+          <a href="https://github.com/RoadmapBeta"><img src="images/github.png" alt="GitHub" class="img-logo" /></a>
+          <a href="https://x.com/roadmapbeta"><img src="images/x-social.png" alt="X" class="x-social" /></a>
+          <a href="https://www.facebook.com/profile.php?id=61566742735877"><img src="images/facebook.webp" alt="Facebook" class="img-logo" /></a>
+          <a href="https://discord.gg/wjDhjjTzJc"><img src="images/discord.png" alt="Discord" class="img-logo" /></a>
         </div>
       </div>
     </footer>
 
     <script>
-      document
-        .getElementById("waitlist-form")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
+      const webhookURL = "https://discord.com/api/webhooks/1299910471142604831/ltYzQP8epJVSl3mGFju49jkuvd5r7Qtl-t0q-jNefyYLg_nin_gru5B_zDa_XGe6Vq0D";
 
-          const email = document.getElementById("email").value;
-          const message = document.getElementById("confirmation-message");
-          message.classList.remove("hidden");
-          message.style.display = "block";
-          setTimeout(() => {
-            message.style.display = "none";
-          }, 3000);
-        });
+      function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      }
+
+      document.getElementById("waitlist-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const email = document.getElementById("email").value;
+        if (!isValidEmail(email)) return;
+
+        const message = { content: `New email submission: ${email}` };
+
+        fetch(webhookURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(message),
+        })
+          .then(response => {
+            if (response.ok) {
+              const toast = document.getElementById("toast");
+              toast.classList.remove("hidden");
+              setTimeout(() => toast.classList.add("hidden"), 3000);
+              document.getElementById("email").value = "";
+            }
+          })
+          .catch(error => console.error("Error:", error));
+      });
     </script>
   </body>
 </html>
