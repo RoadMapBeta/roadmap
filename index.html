@@ -180,8 +180,15 @@ document.getElementById("waitlist-form").addEventListener("submit", async functi
         if (response.ok) {
             const toast = document.getElementById("toast");
             toast.classList.remove("hidden");
-            setTimeout(() => toast.classList.add("hidden"), 3000);
-            document.getElementById("email").value = "";
+            toast.style.opacity = '1'; 
+
+            
+            setTimeout(() => {
+                toast.style.opacity = '0'; 
+                setTimeout(() => toast.classList.add("hidden"), 300); 
+            }, 3000);
+
+            document.getElementById("email").value = ""; 
         } else {
             console.error("Failed to send webhook:", response.status);
         }
@@ -189,6 +196,7 @@ document.getElementById("waitlist-form").addEventListener("submit", async functi
         console.error("Error sending webhook:", error);
     }
 });
+
     </script>
 
 </body>
