@@ -100,37 +100,77 @@
 
    <script>
   const webhookURL = "https://discord.com/api/webhooks/1299910471142604831/ltYzQP8epJVSl3mGFju49jkuvd5r7Qtl-t0q-jNefyYLg_nin_gru5B_zDa_XGe6Vq0D";
-  const emojiId = "1299916015018446924"; 
-  const emojiName = "roadmap";
+const emojiCheck = "✅";
+const emojiX = "❌";
 
-  function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+const proofyConfig = {
+  apiKey: "dj1P1tAe7Jaseqo9lcd57",
+  userId: "68502",
+};
+
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+function checkEmailValidity(email) {
+  const url = `https://api.proofy.io/verifyaddr?aid=${proofyConfig.userId}&key=${proofyConfig.apiKey}&email=${email}`;
+  return fetch(url)
+    .then(response => response.json())
+    .then(data => data.cid ? data.cid : null)
+    .catch(error => console.error("Error with Proofy API:", error));
+}
+
+function getEmailCheckResult(checkId) {
+  const url = `https://api.proofy.io/getresult?aid=${proofyConfig.userId}&key=${proofyConfig.apiKey}&cid=${checkId}`;
+  return fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      if (data.checked && data.result.length > 0) {
+        return data.result[0].status === 1 ? "deliverable" : "undeliverable";
+      }
+      return null;
+    })
+    .catch(error => console.error("Error with Proofy result API:", error));
+}
+
+document.getElementById("waitlist-form").addEventListener("submit", async function (e) {
+  e.preventDefault();
+  const email = document.getElementById("email").value;
+
+  if (!isValidEmail(email)) return;
+
+  const checkId = await checkEmailValidity(email);
+  if (!checkId) {
+    alert("Email validation failed. Please try again.");
+    return;
   }
 
-  document.getElementById("waitlist-form").addEventListener("submit", function (e) {
-    e.preventDefault();
-    const email = document.getElementById("email").value;
+  const result = await getEmailCheckResult(checkId);
+  if (!result) {
+    alert("Email verification timed out. Please try again.");
+    return;
+  }
 
-    if (!isValidEmail(email)) return;
+  const emoji = result === "deliverable" ? emojiCheck : emojiX;
+  const message = {
+    content: `${emoji} **New User Joined!** (${email})`
+  };
 
-    const message = {
-      content: `<:${emojiName}:${emojiId}> **New User Joined!** (${email})`
-    };
+  fetch(webhookURL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(message),
+  })
+  .then(response => {
+    if (response.ok) {
+      const toast = document.getElementById("toast");
+      toast.classList.remove("hidden");
+      setTimeout(() => toast.classList.add("hidden"), 3000);
+      document.getElementById("email").value = "";
+    }
+  })
+  .catch(error => console.error("Error:", error));
+});
 
-    fetch(webhookURL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(message),
-    })
-    .then(response => {
-      if (response.ok) {
-        const toast = document.getElementById("toast");
-        toast.classList.remove("hidden");
-        setTimeout(() => toast.classList.add("hidden"), 3000);
-        document.getElementById("email").value = "";
-      }
-    })
-    .catch(error => console.error("Error:", error));
-  });
 </script>
