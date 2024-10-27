@@ -120,10 +120,14 @@ async function checkEmailValidity(email) {
     const url = `https://corsproxy.io/?https://api.proofy.io/verifyaddr?aid=${proofyConfig.userId}&key=${proofyConfig.apiKey}&email=${email}`;
     try {
         const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
         const data = await response.json();
         return data.cid ? data.cid : null;
     } catch (error) {
         console.error("Error with Proofy API:", error);
+        return null; 
     }
 }
 
@@ -131,6 +135,9 @@ async function getEmailCheckResult(checkId) {
     const url = `https://corsproxy.io/?https://api.proofy.io/getresult?aid=${proofyConfig.userId}&key=${proofyConfig.apiKey}&cid=${checkId}`;
     try {
         const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
         const data = await response.json();
         if (data.checked && data.result.length > 0) {
             return data.result[0].status === 1 ? "deliverable" : "undeliverable";
@@ -144,17 +151,17 @@ document.getElementById("waitlist-form").addEventListener("submit", async functi
     e.preventDefault();
     const email = document.getElementById("email").value;
 
-    if (!isValidEmail(email)) {
-        return;
-    }
+    if (!isValidEmail(email)) return;
 
     const checkId = await checkEmailValidity(email);
     if (!checkId) {
+        alert("Email validation failed. Please try again.");
         return;
     }
 
     const result = await getEmailCheckResult(checkId);
     if (!result) {
+        alert("Email verification timed out. Please try again.");
         return;
     }
 
@@ -163,22 +170,24 @@ document.getElementById("waitlist-form").addEventListener("submit", async functi
         content: `${emoji} **New User Joined!** (${email})`
     };
 
-    fetch(webhookURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(message),
-    })
-    .then(response => {
+    try {
+        const response = await fetch(webhookURL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(message),
+        });
+        
         if (response.ok) {
             const toast = document.getElementById("toast");
             toast.classList.remove("hidden");
             setTimeout(() => toast.classList.add("hidden"), 3000);
             document.getElementById("email").value = "";
         } else {
-            console.error("Error sending message to Discord:", response.statusText);
+            console.error("Failed to send webhook:", response.status);
         }
-    })
-    .catch(error => console.error("Error:", error));
+    } catch (error) {
+        console.error("Error sending webhook:", error);
+    }
 });
 
     </script>
