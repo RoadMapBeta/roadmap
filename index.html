@@ -154,7 +154,7 @@
         const registeredEmails = JSON.parse(localStorage.getItem("registeredEmails")) || [];
 
         if (registeredEmails.includes(email)) {
-            showToast(`You can only sign up once with the email: ${email}`, true);
+            showToast("You can only sign up once with that email.", true);
             return;
         }
 
