@@ -17,19 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
         img.src = avatarUrl;
 
         img.onload = () => {
-            try {
-                const dominantColor = colorThief.getColor(img);
-                const hexColor = `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`;
-                grid.style.border = `5px solid ${hexColor}`;
-            } catch (error) {
-                console.error(`Error extracting color for ${avatarUrl}:`, error);
-                grid.style.border = '5px solid gray';
-            }
+            const dominantColor = colorThief.getColor(img);
+            const hexColor = `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`;
+            imgElement.style.border = `5px solid ${hexColor}`;
         };
 
         img.onerror = () => {
-            console.error(`Error loading image from ${avatarUrl}`);
-            grid.style.border = '5px solid gray';
+            imgElement.style.border = '5px solid gray';
         };
     });
 });
