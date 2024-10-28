@@ -322,6 +322,7 @@ img.grid-img {
   height: 120px;
   border-radius: 50%;
   border: 2px solid gray;
+  transition: border 0.3s ease;
 }
 
 h2 {
