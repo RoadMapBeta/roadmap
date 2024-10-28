@@ -19,11 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         img.onload = () => {
             const dominantColor = colorThief.getColor(img);
             const hexColor = `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`;
-            imgElement.style.border = `5px solid ${hexColor}`;
-        };
-
-        img.onerror = () => {
-            imgElement.style.border = '5px solid gray';
+            imgElement.style.border = `2px solid ${hexColor}`; 
         };
     });
 });
