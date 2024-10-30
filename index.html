@@ -6,11 +6,13 @@
     <title>RoadMap - Explore New Roads, Challenge Friends</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="icon" type="image/png" href="images/roadmap.png">
-    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script>
-        (function () {
-            emailjs.init("XmzyxDkluSnOXrJjj");
+        (function(){
+            emailjs.init("XmzyxDkluSnOXrJjj"); 
         })();
+    </script>
+    <script>
         if (window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('index')) {
             window.location.replace('/roadmap/');
         }
@@ -39,7 +41,14 @@
 
 <div class="email-form">
     <form id="waitlist-form">
-        <input type="email" id="email" name="email" autocomplete="on" placeholder="Enter your email address" required />
+        <input
+            type="email"
+            id="email"
+            name="email"
+            autocomplete="on"
+            placeholder="Enter your email address"
+            required
+        />
         <button type="submit">Join Waitlist</button>
     </form>
 </div>
@@ -96,38 +105,128 @@
 </footer>
 
 <script>
+    const webhookURL = "https://discord.com/api/webhooks/1299910471142604831/ltYzQP8epJVSl3mGFju49jkuvd5r7Qtl-t0q-jNefyYLg_nin_gru5B_zDa_XGe6Vq0D";
+    const emojiCheck = "✅";
+    const emojiX = "❌";
+
+    const proofyConfig = {
+        apiKey: "dj1P1tAe7Jaseqo9lcd57",
+        userId: "68502",
+    };
+
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    async function checkEmailValidity(email) {
+        const url = `https://corsproxy.io/?https://api.proofy.io/verifyaddr?aid=${proofyConfig.userId}&key=${proofyConfig.apiKey}&email=${email}`;
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            return data.cid ? data.cid : null;
+        } catch (error) {
+            console.error("Error with Proofy API:", error);
+            return null; 
+        }
+    }
+
+    async function getEmailCheckResult(checkId) {
+        const url = `https://corsproxy.io/?https://api.proofy.io/getresult?aid=${proofyConfig.userId}&key=${proofyConfig.apiKey}&cid=${checkId}`;
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            if (data.checked && data.result.length > 0) {
+                return data.result[0].status === 1 ? "deliverable" : "undeliverable";
+            }
+        } catch (error) {
+            console.error("Error with Proofy result API:", error);
+        }
+        return null; 
+    }
+
     document.getElementById("waitlist-form").addEventListener("submit", async function (e) {
         e.preventDefault();
         const email = document.getElementById("email").value;
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+
+        if (!isValidEmail(email)) return;
+
         const registeredEmails = JSON.parse(localStorage.getItem("registeredEmails")) || [];
+
         if (registeredEmails.includes(email)) {
             showToast("You can only sign up once with that email.", true);
             return;
         }
-        emailjs.send("service_bpqsfws", "template_t2d98c2", { email: email })
-            .then(() => {
+
+        const checkId = await checkEmailValidity(email);
+        if (!checkId) {
+            alert("Email validation failed. Please try again.");
+            return;
+        }
+
+        let result = null;
+
+        while (result === null) {
+            result = await getEmailCheckResult(checkId);
+            if (result === null) {
+                console.log("Waiting for result..."); 
+                await new Promise(resolve => setTimeout(resolve, 2000)); 
+            }
+        }
+
+        const emoji = result === "deliverable" ? emojiCheck : emojiX;
+        const message = {
+            content: `${emoji} **New User Joined!** (${email})`
+        };
+
+        try {
+            const response = await fetch(webhookURL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(message),
+            });
+            
+            if (response.ok) {
                 registeredEmails.push(email);
                 localStorage.setItem("registeredEmails", JSON.stringify(registeredEmails));
                 showToast("Email registered successfully.");
-                document.getElementById("email").value = "";
-            })
-            .catch(() => {
-                showToast("Failed to register email.", true);
-            });
+                document.getElementById("email").value = ""; 
+
+                emailjs.send("service_bpqsfws", "template_t2d98c2", {
+                    to_email: email,
+                    subject: "Thank you for joining the RoadMap Waitlist!",
+                    message: "You have successfully joined the waitlist for RoadMap. Stay tuned for updates!"
+                })
+                .then(function(response) {
+                    console.log("Email sent successfully:", response);
+                }, function(error) {
+                    console.error("Error sending email:", error);
+                });
+            } else {
+                alert("Failed to send Discord notification.");
+            }
+        } catch (error) {
+            console.error("Error sending Discord notification:", error);
+        }
     });
 
     function showToast(message, isError = false) {
         const toast = document.getElementById("toast");
-        toast.querySelector(".toast-message").textContent = message;
         toast.classList.remove("hidden");
-        if (isError) {
-            toast.classList.add("error");
-        }
+        toast.classList.add(isError ? "error" : "success");
+        document.querySelector(".toast-message").textContent = message;
+
         setTimeout(() => {
             toast.classList.add("hidden");
         }, 3000);
     }
 </script>
+
 </body>
 </html>
