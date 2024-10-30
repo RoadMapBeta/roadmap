@@ -6,7 +6,7 @@
     <title>RoadMap - Explore New Roads, Challenge Friends</title>
     <link rel="stylesheet" href="styles.css" />
     <link rel="icon" type="image/png" href="images/roadmap.png">
-    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script>
         (function(){
             emailjs.init("XmzyxDkluSnOXrJjj"); 
@@ -197,36 +197,32 @@
                 localStorage.setItem("registeredEmails", JSON.stringify(registeredEmails));
                 showToast("Email registered successfully.");
                 document.getElementById("email").value = ""; 
-
                 emailjs.send("service_bpqsfws", "template_t2d98c2", {
-                    to_email: email,
-                    subject: "Thank you for joining the RoadMap Waitlist!",
-                    message: "You have successfully joined the waitlist for RoadMap. Stay tuned for updates!"
-                })
-                .then(function(response) {
-                    console.log("Email sent successfully:", response);
-                }, function(error) {
-                    console.error("Error sending email:", error);
+                    to_email: email 
+                }).then(() => {
+                    console.log('Email sent successfully!');
+                }).catch((error) => {
+                    console.error('Failed to send email:', error);
                 });
+
             } else {
-                alert("Failed to send Discord notification.");
+                alert("Failed to send message to Discord.");
             }
         } catch (error) {
-            console.error("Error sending Discord notification:", error);
+            console.error("Error sending message to Discord:", error);
         }
     });
 
     function showToast(message, isError = false) {
         const toast = document.getElementById("toast");
+        const toastMessage = document.querySelector(".toast-message");
+        toastMessage.textContent = message;
         toast.classList.remove("hidden");
-        toast.classList.add(isError ? "error" : "success");
-        document.querySelector(".toast-message").textContent = message;
-
+        toast.classList.toggle("error", isError);
         setTimeout(() => {
             toast.classList.add("hidden");
         }, 3000);
     }
 </script>
-
 </body>
 </html>
