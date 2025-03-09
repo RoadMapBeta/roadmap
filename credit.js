@@ -28,6 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         imgElement.style.border = `2px solid ${hexColor}`;
                     };
                 }
+            })
+            .catch(error => {
+                console.error('Error fetching Discord data:', error);
             });
     });
 });
