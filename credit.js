@@ -3,29 +3,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     grids.forEach((grid, index) => {
         const userId = grid.getAttribute('data-user-id');
-        const discordUrl = `https://discordlookup.com/user/${userId}`;
+        const discordUrl = `https://lizzy.nu/tools/discorduser`;
 
         setTimeout(() => {
-            fetch(`https://proxy.cors.sh/${discordUrl}`, {
-                headers: {
-                    'x-cors-api-key': 'temp_7e448003221e768219c07398e73b8f71'
-                }
-            })
-                .then(response => response.text())
-                .then(html => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const avatarImage = doc.querySelector('img[src*="cdn.discordapp.com/avatars/"]');
+            const discordIdInput = document.querySelector('#discordid');
+            const submitButton = document.querySelector('#submitbtn');
+            if (discordIdInput && submitButton) {
+                discordIdInput.value = userId;
+                submitButton.click();
 
-                    if (avatarImage) {
-                        const avatarUrl = avatarImage.src;
+                setTimeout(() => {
+                    const profileImage = document.querySelector('p img');
+                    if (profileImage) {
+                        const avatarUrl = profileImage.src;
                         const imgElement = grid.querySelector('.grid-img');
-                        imgElement.src = avatarUrl;
+                        if (imgElement) {
+                            imgElement.src = avatarUrl;
+                        }
                     }
-                })
-                .catch(error => {
-                    console.error('Error fetching Discord data:', error);
-                });
+                }, 3000);
+            }
         }, index * 500);
     });
 });
