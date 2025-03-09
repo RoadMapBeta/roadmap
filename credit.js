@@ -6,16 +6,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const avatarPromises = Array.from(grids).map(grid => {
             const userId = grid.getAttribute('data-user-id');
             const avatarUrl = `https://avatar-cyan.vercel.app/api/${userId}`;
+            return fetch(avatarUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const imgElement = grid.querySelector('.grid-img');
+                    const avatarImage = data.avatarUrl;
 
-            return new Promise((resolve, reject) => {
-                fetch(avatarUrl)
-                    .then(response => response.json())
-                    .then(data => {
-                        const imgElement = grid.querySelector('.grid-img');
-                        const avatarImage = data.avatarUrl;
+                    imgElement.src = avatarImage;
 
-                        imgElement.src = avatarImage;
-
+                    return new Promise((resolve, reject) => {
                         const img = new Image();
                         img.crossOrigin = 'Anonymous';
                         img.src = avatarImage;
@@ -27,22 +26,16 @@ document.addEventListener('DOMContentLoaded', () => {
                             resolve();
                         };
 
-                        img.onerror = () => {
-                            console.error(`Failed to load image: ${avatarImage}`);
-                            resolve(); 
-                        };
-                    })
-                    .catch(error => {
-                        console.error(`Error fetching avatar for user ${userId}:`, error);
-                        resolve(); 
+                        img.onerror = () => reject(`Failed to load image: ${avatarImage}`);
                     });
-            });
+                })
+                .catch(error => {
+                    console.error(`Error fetching avatar for user ${userId}:`, error);
+                });
         });
 
         await Promise.all(avatarPromises);
     };
 
-    fetchAvatars().finally(() => {
-        grids.forEach(grid => grid.style.opacity = 1); 
-    });
+    fetchAvatars();
 });
