@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     grids.forEach(grid => {
         const userId = grid.getAttribute('data-user-id');
-        const discordUrl = `https://corsproxy.io/?url=https://discordlookup.com/user/${userId}`;
+        const discordUrl = `https://crossorigin.me/https://discordlookup.com/user/${userId}`;
 
         fetch(discordUrl)
             .then(response => response.text())
