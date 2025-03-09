@@ -4,9 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fetchAvatars = async () => {
         const avatarPromises = Array.from(grids).map(grid => {
-            const username = grid.querySelector('h2')?.textContent.trim();
-            const avatarUrl = `https://avatar-cyan.vercel.app/api/${username}`;
-
+            const userId = grid.getAttribute('data-user-id');
+            const avatarUrl = `https://avatar-cyan.vercel.app/api/${userId}`;
             return fetch(avatarUrl)
                 .then(response => response.json())
                 .then(data => {
@@ -21,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     imgElement.src = avatarImage;
 
-                    return new Promise(resolve => {
+                    return new Promise((resolve, reject) => {
                         const img = new Image();
                         img.crossOrigin = 'Anonymous';
                         img.src = avatarImage;
@@ -32,7 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
                             imgElement.style.border = `2px solid ${hexColor}`;
                             resolve();
                         };
+
+                        img.onerror = () => reject(`Failed to load image: ${avatarImage}`);
                     });
+                })
+                .catch(error => {
+                    console.error(`Error fetching avatar for user ${userId}:`, error);
                 });
         });
 
