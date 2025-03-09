@@ -1,47 +1,56 @@
 document.addEventListener('DOMContentLoaded', () => {
     const grids = document.querySelectorAll('.grid');
     const colorThief = new ColorThief();
+    const repoOwner = 'RoadMapBeta';
+    const repoName = 'roadmap';
 
-    const fetchAvatars = async () => {
-        const avatarPromises = Array.from(grids).map(grid => {
+    const fetchAvatarsAndCommits = async () => {
+        const avatarPromises = Array.from(grids).map(async grid => {
             const userId = grid.getAttribute('data-user-id');
             const avatarUrl = `https://avatar-cyan.vercel.app/api/${userId}`;
-            return fetch(avatarUrl)
-                .then(response => response.json())
-                .then(data => {
-                    const imgElement = grid.querySelector('.grid-img');
-                    const displayName = data.display_name;
-                    const avatarImage = data.avatarUrl;
+            const githubApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/commits?author=${userId}`;
 
-                    const h2Element = grid.querySelector('h2');
-                    if (h2Element) {
-                        h2Element.textContent = displayName;
-                    }
+            try {
+                const avatarResponse = await fetch(avatarUrl);
+                const avatarData = await avatarResponse.json();
+                const imgElement = grid.querySelector('.grid-img');
+                const h2Element = grid.querySelector('h2');
 
-                    imgElement.src = avatarImage;
+                if (h2Element) {
+                    h2Element.textContent = avatarData.display_name;
+                }
+                imgElement.src = avatarData.avatarUrl;
 
-                    return new Promise((resolve, reject) => {
-                        const img = new Image();
-                        img.crossOrigin = 'Anonymous';
-                        img.src = avatarImage;
+                const commitsResponse = await fetch(githubApiUrl);
+                const commitsData = await commitsResponse.json();
+                const commitCount = commitsData.length;
 
-                        img.onload = () => {
-                            const dominantColor = colorThief.getColor(img);
-                            const hexColor = `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`;
-                            imgElement.style.border = `2px solid ${hexColor}`;
-                            resolve();
-                        };
+                const commitBadge = document.createElement('span');
+                commitBadge.textContent = commitCount;
+                commitBadge.classList.add('commit-badge');
+                h2Element.appendChild(commitBadge);
 
-                        img.onerror = () => reject(`Failed to load image: ${avatarImage}`);
-                    });
-                })
-                .catch(error => {
-                    console.error(`Error fetching avatar for user ${userId}:`, error);
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.crossOrigin = 'Anonymous';
+                    img.src = avatarData.avatarUrl;
+
+                    img.onload = () => {
+                        const dominantColor = colorThief.getColor(img);
+                        const hexColor = `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`;
+                        imgElement.style.border = `2px solid ${hexColor}`;
+                        resolve();
+                    };
+
+                    img.onerror = () => reject();
                 });
+            } catch (error) {
+                console.error(`Error fetching data for user ${userId}:`, error);
+            }
         });
 
         await Promise.all(avatarPromises);
     };
 
-    fetchAvatars();
+    fetchAvatarsAndCommits();
 });
