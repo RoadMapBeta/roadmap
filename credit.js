@@ -10,7 +10,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(response => response.json())
                 .then(data => {
                     const imgElement = grid.querySelector('.grid-img');
+                    const displayName = data.display_name;
                     const avatarImage = data.avatarUrl;
+
+                    const h2Element = grid.querySelector('h2');
+                    if (h2Element) {
+                        h2Element.textContent = displayName;
+                    }
 
                     imgElement.src = avatarImage;
 
