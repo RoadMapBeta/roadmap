@@ -3,10 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     grids.forEach((grid, index) => {
         const userId = grid.getAttribute('data-user-id');
-        const discordUrl = `https://api.cors.lol/?url=https://discordlookup.com/user/${userId}`;
+        const discordUrl = `https://discordlookup.com/user/${userId}`;
 
         setTimeout(() => {
-            fetch(discordUrl)
+            fetch(`https://proxy.cors.sh/${discordUrl}`, {
+                headers: {
+                    'x-cors-api-key': 'temp_7e448003221e768219c07398e73b8f71'
+                }
+            })
                 .then(response => response.text())
                 .then(html => {
                     const parser = new DOMParser();
@@ -20,8 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 })
                 .catch(error => {
-                    console.error('Error fetching data:', error);
+                    console.error('Error fetching Discord data:', error);
                 });
-        }, index * 500); 
+        }, index * 500);
     });
 });
