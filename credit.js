@@ -1,41 +1,56 @@
 document.addEventListener('DOMContentLoaded', () => {
     const grids = document.querySelectorAll('.grid');
-    const colorThief = new ColorThief();
 
-    const fetchAvatars = async () => {
-        const avatarPromises = Array.from(grids).map(grid => {
-            const userId = grid.getAttribute('data-user-id');
-            const avatarUrl = `https://avatar-cyan.vercel.app/api/${userId}`;
-            return fetch(avatarUrl)
+    const fetchAvatarWithTimeout = (url, timeout = 5000) => {
+        return new Promise((resolve, reject) => {
+            const timer = setTimeout(() => reject('Timeout'), timeout);
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    const imgElement = grid.querySelector('.grid-img');
-                    const avatarImage = data.avatarUrl;
-
-                    imgElement.src = avatarImage;
-
-                    return new Promise((resolve, reject) => {
-                        const img = new Image();
-                        img.crossOrigin = 'Anonymous';
-                        img.src = avatarImage;
-
-                        img.onload = () => {
-                            const dominantColor = colorThief.getColor(img);
-                            const hexColor = `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`;
-                            imgElement.style.border = `2px solid ${hexColor}`;
-                            resolve();
-                        };
-
-                        img.onerror = () => reject(`Failed to load image: ${avatarImage}`);
-                    });
+                    clearTimeout(timer);
+                    resolve(data);
                 })
                 .catch(error => {
-                    console.error(`Error fetching avatar for user ${userId}:`, error);
+                    clearTimeout(timer);
+                    reject(error);
                 });
+        });
+    };
+
+    const loadAvatars = async () => {
+        const avatarPromises = Array.from(grids).map(async grid => {
+            const userId = grid.getAttribute('data-user-id');
+            const avatarUrl = `https://avatar-cyan.vercel.app/api/${userId}`;
+
+            try {
+                const data = await fetchAvatarWithTimeout(avatarUrl);
+
+                const imgElement = grid.querySelector('.grid-img');
+                const avatarImage = data.avatarUrl;
+
+                imgElement.src = avatarImage;
+
+                const colorThief = new ColorThief();
+                const img = new Image();
+                img.crossOrigin = 'Anonymous';
+                img.src = avatarImage;
+
+                img.onload = () => {
+                    const dominantColor = colorThief.getColor(img);
+                    const hexColor = `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`;
+                    imgElement.style.border = `2px solid ${hexColor}`;
+                };
+
+                img.onerror = () => {
+                    console.error(`Failed to load image: ${avatarImage}`);
+                };
+            } catch (error) {
+                console.error(`Error fetching avatar for user ${userId}:`, error);
+            }
         });
 
         await Promise.all(avatarPromises);
     };
 
-    fetchAvatars();
+    loadAvatars();
 });
