@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const colorThief = new ColorThief();
                     const img = new Image();
                     img.crossOrigin = "Anonymous";
-                    img.src = avatarUrl;
+                    img.src = `https://corsproxy.io/?url=${encodeURIComponent(avatarUrl)}`;
 
                     img.onload = () => {
                         const dominantColor = colorThief.getColor(img);
