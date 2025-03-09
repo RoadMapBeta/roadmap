@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     grids.forEach((grid, index) => {
         const userId = grid.getAttribute('data-user-id');
-        const discordUrl = `https://cors-proxy.htmldriven.com/?url=https://discordlookup.com/user/${userId}`;
+        const discordUrl = `https://api.cors.lol/?url=https://discordlookup.com/user/${userId}`;
 
         setTimeout(() => {
             fetch(discordUrl)
@@ -18,7 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         const imgElement = grid.querySelector('.grid-img');
                         imgElement.src = avatarUrl;
                     }
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
                 });
-        }, index * 500);
+        }, index * 500); 
     });
 });
