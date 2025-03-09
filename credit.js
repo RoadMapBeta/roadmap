@@ -50,7 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         await Promise.all(avatarPromises);
-    };
 
+        grids.forEach(grid => {
+            grid.style.opacity = 1;
+        });
+    };
+    grids.forEach(grid => grid.style.opacity = 0);
+    
     loadAvatars();
 });
