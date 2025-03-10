@@ -113,124 +113,50 @@
 </footer>
 
 <script>
-    const webhookURL = "https://discord.com/api/webhooks/1348152193353781258/-G0E46Tv6QRJRE2WynVlmgb1fYRu2X7PDbGan4imTFE1RrWF8lefYMki5i5XOtHribes";
-    const emojiCheck = "✅";
-    const emojiX = "❌";
+   document.getElementById("waitlist-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const email = document.getElementById("email").value;
 
-    const proofyConfig = {
-        apiKey: "dj1P1tAe7Jaseqo9lcd57",
-        userId: "68502",
-    };
-
-    function isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+    if (!isValidEmail(email)) {
+        showToast("Please enter a valid email address.", true);
+        return;
     }
 
-    async function checkEmailValidity(email) {
-        const url = `https://corsproxy.io/?https://api.proofy.io/verifyaddr?aid=${proofyConfig.userId}&key=${proofyConfig.apiKey}&email=${email}`;
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            const data = await response.json();
-            return data.cid ? data.cid : null;
-        } catch (error) {
-            console.error("Error with Proofy API:", error);
-            return null; 
-        }
+    const registeredEmails = JSON.parse(localStorage.getItem("registeredEmails")) || [];
+
+    if (registeredEmails.includes(email)) {
+        showToast("You can only sign up once with that email.", true);
+        return;
     }
 
-    async function getEmailCheckResult(checkId) {
-        const url = `https://corsproxy.io/?https://api.proofy.io/getresult?aid=${proofyConfig.userId}&key=${proofyConfig.apiKey}&cid=${checkId}`;
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            const data = await response.json();
-            if (data.checked && data.result.length > 0) {
-                return data.result[0].status === 1 ? "deliverable" : "undeliverable";
-            }
-        } catch (error) {
-            console.error("Error with Proofy result API:", error);
-        }
-        return null; 
-    }
-
-    document.getElementById("waitlist-form").addEventListener("submit", async function (e) {
-        e.preventDefault();
-        const email = document.getElementById("email").value;
-
-        if (!isValidEmail(email)) return;
-
-        const registeredEmails = JSON.parse(localStorage.getItem("registeredEmails")) || [];
-
-        if (registeredEmails.includes(email)) {
-            showToast("You can only sign up once with that email.", true);
-            return;
-        }
-
-        const checkId = await checkEmailValidity(email);
-        if (!checkId) {
-            alert("Email validation failed. Please try again.");
-            return;
-        }
-
-        let result = null;
-
-        while (result === null) {
-            result = await getEmailCheckResult(checkId);
-            if (result === null) {
-                console.log("Waiting for result..."); 
-                await new Promise(resolve => setTimeout(resolve, 2000)); 
-            }
-        }
-
-        const emoji = result === "deliverable" ? emojiCheck : emojiX;
-        const message = {
-            content: `${emoji} **New User Joined!** (${email})`
-        };
-
-        try {
-            const response = await fetch(webhookURL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(message),
-            });
-            
-            if (response.ok) {
-                registeredEmails.push(email);
-                localStorage.setItem("registeredEmails", JSON.stringify(registeredEmails));
-                showToast("Email registered successfully.");
-                document.getElementById("email").value = ""; 
-                emailjs.send("service_bpqsfws", "template_t2d98c2", {
-                    to_email: email 
-                }).then(() => {
-                    console.log('Email sent successfully!');
-                }).catch((error) => {
-                    console.error('Failed to send email:', error);
-                });
-
-            } else {
-                alert("Failed to send message to Discord.");
-            }
-        } catch (error) {
-            console.error("Error sending message to Discord:", error);
-        }
+    emailjs.send("service_bpqsfws", "template_t2d98c2", {
+        to_email: email 
+    }).then(() => {
+        registeredEmails.push(email);
+        localStorage.setItem("registeredEmails", JSON.stringify(registeredEmails));
+        showToast("Email registered and message sent successfully.");
+        document.getElementById("email").value = ""; 
+    }).catch((error) => {
+        console.error('Failed to send email:', error);
+        showToast("Failed to send email.", true);
     });
+});
 
-    function showToast(message, isError = false) {
-        const toast = document.getElementById("toast");
-        const toastMessage = document.querySelector(".toast-message");
-        toastMessage.textContent = message;
-        toast.classList.remove("hidden");
-        toast.classList.toggle("error", isError);
-        setTimeout(() => {
-            toast.classList.add("hidden");
-        }, 3000);
-    }
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+function showToast(message, isError = false) {
+    const toast = document.getElementById("toast");
+    const toastMessage = document.querySelector(".toast-message");
+    toastMessage.textContent = message;
+    toast.classList.remove("hidden");
+    toast.classList.toggle("error", isError);
+    setTimeout(() => {
+        toast.classList.add("hidden");
+    }, 3000);
+}
 </script>
 </body>
 </html>
