@@ -134,7 +134,7 @@
     }).then(() => {
         registeredEmails.push(email);
         localStorage.setItem("registeredEmails", JSON.stringify(registeredEmails));
-        showToast("Email registered and message sent successfully.");
+        showToast("Email registered!");
         document.getElementById("email").value = ""; 
     }).catch((error) => {
         console.error('Failed to send email:', error);
